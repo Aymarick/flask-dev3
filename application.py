@@ -51,15 +51,10 @@ def display_tweets():
 # exemple de route : /tweets/John ; la chaine de caractère "John" sera donnée en paramètre de notre fonction
 @app.route('/tweets/<author>')
 def display_author_tweets(author):
-    # Création d'un tableau temporaire qui contiendra les tweets de notre auteur
-    authorTweets = []
-    # Boucle pour parcourir les tweets existants
-    for tweet in tweets: 
-        # Comparaison du nom d'auteur entre celui du tweet et celui récupéré dans l'url
-        if tweet.authorName == author :
-            # Si les noms sont identiques, notre tweet appartient à l'auteur souhaité
-            # On l'ajoute donc dans notre tableau temporaire.
-            authorTweets.append(tweet)
+    # Récupération des tweets en filtrant avec l'auteur demandé
+    # Ici SQLAlchemy nous simplifie la tâche
+    # SQL = SELECT * FROM tweet WHERE authorName = author; 
+    authorTweets = Tweet.query.filter_by(authorName=author)
     # Réutilisation du template "tweets.html" en y injectant notre tableau temporaire
     # qui contient les tweets d'un auteur
     return render_template('tweets.html', tweets=authorTweets)
