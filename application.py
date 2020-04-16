@@ -7,24 +7,31 @@ from flask import request
 # Import d'une fonction pour rediriger la réponse, 
 # et url_for une méthode pour récupérer l'url avec son nom de fonction
 from flask import redirect, url_for
-# Depuis notre fichier tweet.py on importe la classe Tweet
-from tweet import Tweet
 # Import de la lib "os" qui permet d'interagir avec notre système d'exploitation
 import os
+# Import de la gestion de BDD à l'aide du framework SQLAlchemy
+from flask_sqlalchemy import SQLAlchemy
 
 # Création de notre application Flask
 app = Flask(__name__)
+# Specification du chemin de notre fichier de Base de données
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///data.db'
+# Création de l'instance de notre base de données
+db = SQLAlchemy(app)
+
+# Depuis notre fichier tweet.py on importe la classe Tweet
+from tweet import Tweet
 
 # Tableau pour stocker nos tweets 
 tweets = []
 
 # append = ajouter à la fin
 # Créations de tweets d'exemples
-tweets.append(Tweet("John", "Tweet n°1"))
-tweets.append(Tweet("Jane", "Lorem ipsum"))
-tweets.append(Tweet("John", "Dolores sit amet"))
-tweets.append(Tweet("John", "Autre tweet"))
-tweets.append(Tweet("John", "Dernier tweet"))
+# tweets.append(Tweet("John", "Tweet n°1"))
+# tweets.append(Tweet("Jane", "Lorem ipsum"))
+# tweets.append(Tweet("John", "Dolores sit amet"))
+# tweets.append(Tweet("John", "Autre tweet"))
+# tweets.append(Tweet("John", "Dernier tweet"))
 
 # Association de la route "/" à notre fonction hello_world()
 @app.route('/')

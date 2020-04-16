@@ -1,19 +1,17 @@
 import datetime
+from application import db
 
 def createTweet():
     author = input("Nom de l'auteur du tweet : ")
     text = input("Contenu du tweet : ")
     return Tweet(author, text)
 
-class Tweet:
-    numberOfTweets=0
-    def __init__(self, authorName, content, image=None):
-        Tweet.numberOfTweets += 1
-        self.id = Tweet.numberOfTweets
-        self.authorName = authorName
-        self.content = content
-        self.image = image
-        self.date = datetime.datetime.now()
+class Tweet(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    authorName = db.Column(db.String(80), nullable=False)
+    content = db.Column(db.String(140), nullable=False)
+    image = db.Column(db.String(80), nullable=True)
+    date = db.Column(db.DateTime, default=datetime.datetime.utcnow)
 
     def print(self):
         print("-------------------------")
