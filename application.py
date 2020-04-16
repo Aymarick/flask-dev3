@@ -11,6 +11,8 @@ from flask import redirect, url_for
 import os
 # Import de la gestion de BDD à l'aide du framework SQLAlchemy
 from flask_sqlalchemy import SQLAlchemy
+# Import d'une fonction flask pour terminer une requête avec un code d'erreur
+from flask import abort
 
 # Création de notre application Flask
 app = Flask(__name__)
@@ -96,25 +98,16 @@ def display_create_tweet():
         # Redirection vers la liste de nos tweets
         return redirect(url_for('display_tweets'))
 
-# Définition d'une fonction (hors Flask) nous permettant de retrouver
-# un tweet avec son identifiant
-def find_tweet_by_id(tweet_id):
-    # Boucle pour parcourir les tweets existants
-    for tweet in tweets :
-        # si l'identifiant est celui dont on a besoin
-        if tweet.id == tweet_id :
-            # on retourne notre tweet
-            return tweet
-    # Si on arrive ici, c'est qu'aucun tweet n'a été trouvé avec cet id
-    # on renvoie donc une valeur vide
-    return None
-
 # Association de la route "/tweets/<identifiant d'un tweet/edit" à notre fonction edit_tweet()
 # Celle ci accepte 2 méthode HTTP : GET & POST
 @app.route('/tweets/<int:tweet_id>/edit', methods=['POST', 'GET'])
 def edit_tweet(tweet_id):
-    # On récupère le tweet que l'on veut éditer à l'aide de notre fonction find_tweet_by_id
-    tweet = find_tweet_by_id(tweet_id)
+    # On récupère le tweet que l'on veut éditer dans notre base de données
+    tweet = Tweet.query.filter_by(id=tweet_id).first()
+    # Si on ne trouve pas le tweet
+    if tweet == None:
+        # On émet une erreur 404 Not Found
+        abort(404)
     #Si notre méthode HTTP est GET
     if request.method == 'GET':
         # On affiche notre formulaire d'édition prérempli avec notre tweet
@@ -135,5 +128,8 @@ def edit_tweet(tweet_id):
             f.save(filepath)
             # On modifie l'url de l'image pour son affichage (à l'aide de son nom)
             tweet.image = url_for('static', filename='uploads/'+f.filename)
+        
+        # Sauvegarde de notre session dans la base de données
+        db.session.commit()
         #redirection vers l'affichage de nos tweets.
         return redirect(url_for('display_tweets'))
