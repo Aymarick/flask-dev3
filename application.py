@@ -86,10 +86,13 @@ def display_create_tweet():
             f.save(filepath)
             # création de l'url de l'image pour son affichage (à l'aide de son nom)
             image = url_for('static', filename='uploads/'+f.filename)
-        # Création d'un tweet à l'aide de notre constructeur (qui se trouve dans le fichier tweet.py)
-        tweet = Tweet(authorName, content, image)
-        # Insertion de notre tweet en première position dans notre tableau
-        tweets.insert(0, tweet)
+        # Création d'un tweet à l'aide du constructeur généré par SQLAlchemy 
+        tweet = Tweet(authorName=authorName, content=content, image=image)
+        # Insertion de notre tweet dans session de base de données
+        # Attention, celui-ci n'est pas encore présent dans la base de données
+        db.session.add(tweet)
+        # Sauvegarde de notre session dans la base de données
+        db.session.commit()
         # Redirection vers la liste de nos tweets
         return redirect(url_for('display_tweets'))
 

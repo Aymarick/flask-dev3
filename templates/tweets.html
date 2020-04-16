@@ -34,7 +34,7 @@
                                 {% if tweet.image %}
                                 <img class="img-fluid" src="{{ tweet.image }}" />
                                 {% endif %}
-                                <footer class="blockquote-footer">Date: {{ tweet.date.strftime("%d/%m/%Y, %H:%M:%S") }} - <a href="/tweets/{{ tweet.id }}/edit">Modifier</a></footer>
+                                <footer class="blockquote-footer">{% if tweet.date %}Date: {{ tweet.date.strftime("%d/%m/%Y, %H:%M:%S") }} - {% endif %}<a href="/tweets/{{ tweet.id }}/edit">Modifier</a></footer>
                             </blockquote>
                         </div>
                     </div>
