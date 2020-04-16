@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Liste des utilisateur</title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+        
+    </head>
+
+    <body>
+        <div>
+            <nav class="navbar navbar-light bg-light">
+                <div class="container">
+                    <a class="navbar-brand" href="#">
+                        <img src="//upload.wikimedia.org/wikipedia/fr/thumb/c/c8/Twitter_Bird.svg/944px-Twitter_Bird.svg.png"
+                            width="45" height="40" alt="">
+                    </a>
+                    <a href="/users/create" class="btn btn-primary">Ajouter un utilisateur</a>
+                </div>
+            </nav>
+        </div>
+    
+        <div class="container" style="margin-top: 50px;">
+            <div class="col-md-9">
+                <h3>liste des utilisateurs:</h3>
+                <table class="table">
+                    <thead>
+                        <th scope="col">#</th>
+                        <th scope="col">Nom</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Action</th>
+                    </thead>
+                    <tbody>
+                    {% for user in users %}
+                    <tr>
+                        <th scope="row">{{ user.id }}</th>
+                        <td>{{ user.name }}</td>
+                        <td>{{ user.email }}</td>
+                        <td><a href="/users/{{ user.id }}/edit">Modifier</a></td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <script src="{{ url_for('static', filename='js/jquery-3.5.0.min.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+    </body>
+</html>

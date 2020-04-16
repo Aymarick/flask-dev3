@@ -50,6 +50,14 @@ def display_tweets():
     # Conversion du template "tweets.html" en lui injectant notre tableau de tweets récupérés de la BDD
     return render_template('tweets.html', tweets=allTweets)
 
+    # Association de la route "/users" à notre fonction display_users()
+@app.route('/users')
+def display_users():
+    # récupération des utilisateur de la BDD.
+    allUsers = User.query.all()
+    # Conversion du template "tweets.html" en lui injectant notre tableau de tweets récupérés de la BDD
+    return render_template('users.html', users=allUsers)
+
 # Association de la route "/tweets/<nom d'un auteur>" à notre fonction display_author_tweets()
 # exemple de route : /tweets/John ; la chaine de caractère "John" sera donnée en paramètre de notre fonction
 @app.route('/tweets/<author>')
