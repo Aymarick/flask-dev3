@@ -23,6 +23,7 @@ db = SQLAlchemy(app)
 
 # Depuis notre fichier tweet.py on importe la classe Tweet
 from tweet import Tweet
+from user import User
 
 # Tableau pour stocker nos tweets 
 tweets = []
@@ -132,4 +133,29 @@ def edit_tweet(tweet_id):
         # Sauvegarde de notre session dans la base de données
         db.session.commit()
         #redirection vers l'affichage de nos tweets.
+        return redirect(url_for('display_tweets'))
+
+@app.route('/users/create', methods=['POST', 'GET'])
+def create_user():
+    # Si la méthode est de type "GET"
+    if request.method == 'GET':
+        # On affiche notre formulaire de création 
+        return render_template('create_user.html')
+    else:
+        # Sinon, notre méthode HTTP est POST
+        # on va donc créer un nouvel utilisateur
+        # récupération du nom de l'utilisateur depuis le corps de la requête
+        name = request.form['name']
+        # récupération de l'email depuis le corps de la requête
+        email = request.form['email']
+        # récupération du mot de passe depuis le corps de la requête
+        password = request.form['password']
+        # Création d'un utilisateur à l'aide du constructeur généré par SQLAlchemy 
+        user = User(name=name, email=email, password=password)
+        # Insertion de notre utilisateur dans session de base de données
+        # Attention, celui-ci n'est pas encore présent dans la base de données
+        db.session.add(user)
+        # Sauvegarde de notre session dans la base de données
+        db.session.commit()
+        # Redirection vers la liste de nos tweets
         return redirect(url_for('display_tweets'))
