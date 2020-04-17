@@ -67,8 +67,15 @@ def hello_world():
 def display_tweets():
     # récupération des tweets de la BDD.
     allTweets = Tweet.query.all()
+    # création d'une variable user qui peut être vide dans le cas où on est pas connecté
+    user = None
+    # si "user_id" est présent dans notre variable de session
+    if 'user_id' in session:
+        # cela veut dire qu'un utilisateur est connecté
+        # on le récupère donc avec son id dans la base de données
+        user = User.query.filter_by(id=session['user_id']).first()
     # Conversion du template "tweets.html" en lui injectant notre tableau de tweets récupérés de la BDD
-    return render_template('tweets.html', tweets=allTweets)
+    return render_template('tweets.html', tweets=allTweets, user=user)
 
     # Association de la route "/users" à notre fonction display_users()
 @app.route('/users')
