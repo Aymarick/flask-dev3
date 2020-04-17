@@ -4,7 +4,7 @@ from flask import Flask
 from flask import render_template
 # Import de la variable request de Flask
 from flask import request
-# Import d'une fonction pour rediriger la réponse, 
+# Import d'une fonction pour rediriger la réponse,
 # et url_for une méthode pour récupérer l'url avec son nom de fonction
 from flask import redirect, url_for
 # Import de la lib "os" qui permet d'interagir avec notre système d'exploitation
@@ -24,6 +24,14 @@ db = SQLAlchemy(app)
 # Depuis notre fichier tweet.py on importe la classe Tweet
 from tweet import Tweet
 from user import User
+
+# Récupération du chemin du fichier de la base de données
+dbPath = os.path.join(app.root_path, 'data.db')
+# Si le fichier n'existe pas
+if not os.path.exists(dbPath):
+    # Je créer ma base de données
+    db.create_all()
+    print("Base de données créée")
 
 # Tableau pour stocker nos tweets 
 tweets = []
@@ -137,17 +145,16 @@ def edit_tweet(tweet_id):
             f.save(filepath)
             # On modifie l'url de l'image pour son affichage (à l'aide de son nom)
             tweet.image = url_for('static', filename='uploads/'+f.filename)
-        
         # Sauvegarde de notre session dans la base de données
         db.session.commit()
-        #redirection vers l'affichage de nos tweets.
+        # redirection vers l'affichage de nos tweets.
         return redirect(url_for('display_tweets'))
 
 @app.route('/users/create', methods=['POST', 'GET'])
 def create_user():
     # Si la méthode est de type "GET"
     if request.method == 'GET':
-        # On affiche notre formulaire de création 
+        # On affiche notre formulaire de création
         return render_template('create_user.html')
     else:
         # Sinon, notre méthode HTTP est POST
@@ -166,4 +173,4 @@ def create_user():
         # Sauvegarde de notre session dans la base de données
         db.session.commit()
         # Redirection vers la liste de nos tweets
-        return redirect(url_for('display_tweets'))
+        return redirect(url_for('display_users'))
