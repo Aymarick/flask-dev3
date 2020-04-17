@@ -27,7 +27,7 @@
                     {% for tweet in tweets %}
                     <div class="card">
                         <div class="card-header">
-                            <p><a href="/tweets/{{ tweet.authorName }}">{{ tweet.authorName }}</a></p>
+                            <p><a href="/tweets/{{ tweet.user_id }}">{{ tweet.user.name }}</a></p>
                         </div>
                         <div class="card-body">
                             <blockquote class="blockquote mb-0">
