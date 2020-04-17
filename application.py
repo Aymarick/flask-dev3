@@ -17,10 +17,17 @@ from flask import abort
 import requests
 # Import de l'API Key de open weather Map depuis un fichier qui n'est pas dans le git
 from variables import openWeatherMapKey
+# import de la variable secret pour crypter les sessions
+from variables import session_secret
+# Import de la variable de session de Flask
+from flask import session
+
 from datetime import datetime
 
 # Création de notre application Flask
 app = Flask(__name__)
+# On donne un tableau de bytes aléatoire pour crypter nos sessions
+app.secret_key = session_secret
 # Specification du chemin de notre fichier de Base de données
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///data.db'
 # Création de l'instance de notre base de données
@@ -240,3 +247,26 @@ def weather():
         # Création d'un dictionnaire Python avec les données souhaitées
         hourly.append({'icon': hour['weather'][0]['icon'], 'temp': hour['temp'], 'time': time.hour})
     return render_template('weather.html', currentWeatherDescription=currentWeatherDescription, currentWeatherIcon=currentWeatherIcon, currentTemp=currentTemp, hourly=hourly)
+
+# Association de la route "/login" à notre fonction login()
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    # Si on est dans une requête GET
+    if request.method == 'GET':
+        # On affiche simplement le formulaire de Login
+        return render_template('login.html')
+    else:
+        # Sinon cela veut dire qu'on est dans une méthode POST
+        # On récupère l'utilisateur avec son email
+        user = User.query.filter_by(email=request.form['email']).first()
+        # Si notre utilisteur existe et 
+        # Si le mot de passe présent dans le formulaire est le même que celui de la base de données
+        if user != None and user.password == request.form['password'] :
+            # On a réussi notre login, on inscrit donc le l'identifiant de l'utilisateur dans la variable de session
+            session['user_id'] = user.id
+            # on redirige l'utilisateur vers la liste des tweets
+            return redirect(url_for('display_tweets'))
+        else:
+            # Si l'utilisateur n'existe pas ou que les mots de passes ne correspondent pas
+            # on renvoie l'utilisateur vers le formulaire de login.
+            return render_template('login.html', error="Email et/ou mot de passe incorrect")
