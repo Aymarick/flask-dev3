@@ -66,15 +66,19 @@ def display_users():
     # Conversion du template "tweets.html" en lui injectant notre tableau de tweets récupérés de la BDD
     return render_template('users.html', users=allUsers)
 
-# Association de la route "/tweets/<nom d'un auteur>" à notre fonction display_author_tweets()
-# exemple de route : /tweets/John ; la chaine de caractère "John" sera donnée en paramètre de notre fonction
-@app.route('/tweets/<author>')
-def display_author_tweets(author):
-    # Récupération des tweets en filtrant avec l'auteur demandé
-    # Ici SQLAlchemy nous simplifie la tâche
-    # SQL = SELECT * FROM tweet WHERE authorName = author; 
-    authorTweets = Tweet.query.filter_by(authorName=author)
-    # Réutilisation du template "tweets.html" en y injectant notre tableau temporaire
+# Association de la route "/tweets/<identifiant d'un utilisateur>" à notre fonction display_author_tweets()
+# exemple de route : /tweets/1 ; l'entier "1" sera donnée en paramètre de notre fonction
+@app.route('/tweets/<int:user_id>')
+def display_author_tweets(user_id):
+    # Récupération de l'utilisateur avec son identifiant
+    user = User.query.filter_by(id=user_id).first()
+    # Si l'utilisateur n'existe pas
+    if user == None:
+        # On renvoie une page 404 Not Found
+        abort(404)
+    # Récupération des tweets en utilisant la relation définie dans le modèle
+    authorTweets = user.tweets
+    # Réutilisation du template "tweets.html" en y injectant notre tableau 
     # qui contient les tweets d'un auteur
     return render_template('tweets.html', tweets=authorTweets)
 
