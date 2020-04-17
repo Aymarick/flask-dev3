@@ -105,6 +105,11 @@ def display_author_tweets(user_id):
 # Celle ci accepte 2 méthode HTTP : GET & POST
 @app.route('/tweets/create', methods=['POST', 'GET'])
 def display_create_tweet():
+    # On autorise la création de tweet qu'aux utilisateurs enregistrés
+    # Si user_id n'est pas dans notre variable session
+    if not 'user_id' in session :
+        # on redirige vers la page de login
+        return redirect(url_for('login'))
     # Si la méthode est de type "GET"
     if request.method == 'GET':
         #Récupération de la liste des utilisateurs pour la relation tweet<->user
@@ -114,8 +119,8 @@ def display_create_tweet():
     else:
         # Sinon, notre méthode HTTP est POST
         # on va donc créer un nouveau tweet
-        # récupération de l'identifiant de l'utilisateur depuis le corps de la requête
-        user_id = request.form['user_id']
+        # récupération de l'identifiant de l'utilisateur depuis la variable de session
+        user_id = session['user_id']
         # récupération du contenu depuis le corps de la requête
         content = request.form['content']
         # Création d'une variable image par défaut vide.
@@ -277,3 +282,10 @@ def login():
             # Si l'utilisateur n'existe pas ou que les mots de passes ne correspondent pas
             # on renvoie l'utilisateur vers le formulaire de login.
             return render_template('login.html', error="Email et/ou mot de passe incorrect")
+
+# Association de la route "/logout" à notre fonction logout()
+@app.route('/logout')
+def logout():
+    # Pour déconnecter l'utilisateur on enlève user_id de la variable session
+    session.pop('user_id', None)
+    return redirect(url_for('display_tweets'))

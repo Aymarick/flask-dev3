@@ -15,7 +15,12 @@
                             width="45" height="40" alt="">
                     </a>
                     <a href="/tweets/create" class="btn btn-primary">Ajouter un tweet</a>
-                    <a href="/users/create" class="btn btn-primary">Ajouter un utilisateur</a>
+                    {% if user %}
+                    <a href="/logout" class="btn btn-primary">Se déconnecter</a>
+                    {% else %}
+                    <a href="/users/create" class="btn btn-primary">S'enregistrer</a>
+                    <a href="/login" class="btn btn-primary">Se connecter</a>
+                    {% endif %}
                 </div>
             </nav>
         </div>
