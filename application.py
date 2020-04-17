@@ -174,3 +174,28 @@ def create_user():
         db.session.commit()
         # Redirection vers la liste de nos tweets
         return redirect(url_for('display_users'))
+
+# Association de la route "/users/<identifiant d'un utilisateur/edit" à notre fonction edit_user()
+# Celle ci accepte 2 méthode HTTP : GET & POST
+@app.route('/users/<int:user_id>/edit', methods=['POST', 'GET'])
+def edit_user(user_id):
+    # On récupère l'utilisateur que l'on veut éditer dans notre base de données
+    user = User.query.filter_by(id=user_id).first()
+    # Si on ne trouve pas l'utilisateur
+    if user == None:
+        # On émet une erreur 404 Not Found
+        abort(404)
+    #Si notre méthode HTTP est GET
+    if request.method == 'GET':
+        # On affiche notre formulaire d'édition prérempli avec notre utilisateur
+        return render_template('edit_user.html', user=user)
+    else:
+        # Sinon nous avons une méthode HTTP POST, nous modifions donc notre utilisateur.
+        # modification du nom de l'utilisateur depuis le corps de la requête
+        user.name = request.form['name']
+        # modification de l'email depuis le corps de la requête
+        user.email = request.form['email']
+        # Sauvegarde de notre session dans la base de données
+        db.session.commit()
+        # redirection vers l'affichage de nos utilisateurs.
+        return redirect(url_for('display_users'))
