@@ -13,6 +13,10 @@ import os
 from flask_sqlalchemy import SQLAlchemy
 # Import d'une fonction flask pour terminer une requête avec un code d'erreur
 from flask import abort
+# Import de la lib requests pour exécuter des requêtes HTTP(S)
+import requests
+# Import de l'API Key de open weather Map depuis un fichier qui n'est pas dans le git
+from variables import openWeatherMapKey
 
 # Création de notre application Flask
 app = Flask(__name__)
@@ -208,3 +212,15 @@ def edit_user(user_id):
         db.session.commit()
         # redirection vers l'affichage de nos utilisateurs.
         return redirect(url_for('display_users'))
+
+# Association de la route "/weather" à notre fonction weather()
+@app.route('/weather')
+def weather():
+    # création d'un dictionaire des variables que l'on veut mettre dans l'URL
+    params = {'lat': 48.0833, 'lon': -1.6833, 'appid': openWeatherMapKey, 'lang': 'fr', 'units': 'metric'}
+    # Appel de notre URL et ses paramètre avec la lib requests
+    response = requests.get('https://api.openweathermap.org/data/2.5/onecall', params=params)
+    # On convertit le contenu de la réponse JSON en dictionnaire Python (tableau associatif)
+    content = response.json()
+    # On cherche dans la structure du tableau l'information que l'on souhaite récupérer
+    return content["current"]["weather"][0]["description"]
