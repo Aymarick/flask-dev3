@@ -7,3 +7,4 @@ class Tweet(db.Model):
     content = db.Column(db.String(140), nullable=False)
     image = db.Column(db.String(80), nullable=True)
     date = db.Column(db.DateTime, default=datetime.datetime.utcnow)
+
