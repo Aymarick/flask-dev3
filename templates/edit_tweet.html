@@ -28,9 +28,13 @@
             <h3>Modification d'un tweet</h3>
             <form method="POST" action="/tweets/{{ tweet.id }}/edit" enctype="multipart/form-data">
                 <div class="form-group row">
-                    <label for="author" class="col-3 col-form-label">Nom de l'auteur</label>
+                    <label for="user_id" class="col-3 col-form-label">Auteur</label>
                     <div class="col-9">
-                        <input id="author" name="author" type="text" class="form-control" value="{{ tweet.authorName }}">
+                        <select class="form-control" name="user_id" id="user_id">
+                            {% for user in users %}
+                            <option value="{{ user.id }}"{% if tweet.user_id == user.id %} selected{% endif %}>{{ user.name }}</option>
+                            {% endfor %}
+                        </select>
                     </div>
                 </div>
                 <div class="form-group row">

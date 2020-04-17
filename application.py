@@ -133,12 +133,15 @@ def edit_tweet(tweet_id):
         abort(404)
     #Si notre méthode HTTP est GET
     if request.method == 'GET':
+        # récupération de nos utilisateurs depuis la base de données
+        users = User.query.all()
         # On affiche notre formulaire d'édition prérempli avec notre tweet
-        return render_template('edit_tweet.html', tweet=tweet)
+        # On donne également la liste des utilisateurs pour les afficher dans le select
+        return render_template('edit_tweet.html', tweet=tweet, users=users)
     else:
         # Sinon nous avons une méthode HTTP POST, nous modifions donc notre tweet.
-        # modification du nom de l'auteur depuis le corps de la requête
-        tweet.authorName = request.form['author']
+        # modification de l'auteur avec son identifiant depuis le corps de la requête
+        tweet.user_id = request.form['user_id']
         # modification du contenu depuis le corps de la requête
         tweet.content = request.form['content']
         # Récupération de l'image depuis le corps de la requête.
